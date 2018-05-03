@@ -1,2 +1,14 @@
+# Mac
 *.DS_STORE
+
+# Jupyter
 *.ipynb_checkpoints*
+
+# PyCharm
+*.idea/*
+*__pycache__*
+
+# Data
+*.csv
+*.sch
+*.txt
