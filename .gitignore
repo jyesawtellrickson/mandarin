@@ -9,6 +9,7 @@
 *__pycache__*
 
 # Data
-*.csv
-*.sch
+data/*
 *.txt
+*.csv
+*.json
