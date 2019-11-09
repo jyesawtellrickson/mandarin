@@ -53,7 +53,7 @@ class lyricstranslateSpider(scrapy.Spider):
                 '//div[@class="song-node-text"]/div/div/div/text()'
             ).extract())
             title = response.xpath(
-                '//h2[@class="title-h2"]/text()'
+                '//div[@class="song-node-text"]/h2/text()'
             ).extract_first()
             artist = response.xpath(
                 '//li[@class="song-node-info-artist"]/a/text()'
