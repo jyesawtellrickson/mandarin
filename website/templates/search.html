@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}Search{% endblock %} {% block content
+    %}
+    <h1 align="center">Search</h1>
+    {% if result %}
+    <ul class="list-group list-group-flush" id="notes">
+      <li class="list-group-item">
+        <a href="/song/name/{{ result.name }}">{{ result.name }}</a> - {{ result.artist }}
+      </li>
+    </ul>
+    {% endif %}
+    <form method="POST">
+      <textarea name="name" id="name" class="form-control"></textarea>
+      <br />
+      <div align="center">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+    {% endblock %}

@@ -11,7 +11,11 @@ from os import path
 
 
 class Snippet:
-    def __init__(self, text, meta):
+    """Snippet of text for learning.
+
+    It has some useful features.
+    """
+    def __init__(self, text, meta={}):
         # meta includes author, title, url, type
         self.meta = meta if meta else {}
         self.text = text
@@ -26,7 +30,7 @@ class Snippet:
 
         Args:
             c (str): Single Chinese character
-            hsk (DataFrame): 
+            hsk (DataFrame):
 
         Returns:
             int: Level of Chinese character or None.
@@ -47,7 +51,9 @@ class Snippet:
         if len(self.lyrics_processed) == 0:
             return None
         # Create hsk dataframe for use in grading.
-        hsk = pd.read_csv(path.join(path.dirname(__file__)[:-4], 'data/hsk/all.csv'))
+        path = "/Users/jyesr/Documents/mandarin/data/hsk/all.csv"
+        # path = path.join(path.dirname(__file__)[:-4], 'data/hsk/all.csv')
+        hsk = pd.read_csv(path)
         # Remove space and newline characters.
         if (self.lyrics_processed):
             text = ''.join([t for t in self.lyrics_processed if t != ' ' and t != '\n'])
@@ -91,20 +97,25 @@ class Snippet:
         else:
             return 0
 
-    def score_text(self, level=None):
+    def score_text(self, level=None, ignore_zero=True):
         if self.graded is None:
             self.rank_text()
         if self.character_length() == 0:
             return None
         levels = self.graded
+        if ignore_zero:
+            levels.pop(0, None)
         self.stats['total_characters'] = len(self.lyrics_processed)
         self.stats['unique_characters'] = sum([len(v) for k, v in levels.items()])
         if level is None:
             tmp = {}
             for i in range(1, 7):
-                tmp[i] = round(
-                    sum([len(levels[i]) for i in range(1, i + 1)]) \
-                    / self.stats['unique_characters'], 2)
+                if self.stats['unique_characters'] > 0:
+                    tmp[i] = round(
+                        sum([len(levels[i]) for i in range(1, i + 1)]) \
+                        / self.stats['unique_characters'], 2)
+                else:
+                    tmp[i] = 0
             self.stats['readability'] = tmp
         else:
             self.stats['readability'] = {
@@ -151,6 +162,6 @@ class Snippet:
             self.meta['title'] =  \
                 self.meta.get('title').strip(whitespace)
         # Convert to Simplified Chinese.
-        lyrics_tmp = SnowNLP(lyrics_tmp).hans
+        lyrics_tmp = SnowNLP(lyrics_tmp).han
 
         self.lyrics_processed = lyrics_tmp

@@ -3,10 +3,10 @@ import json
 
 class musixmatchSpider(scrapy.Spider):
     name = 'musixmatch'
+    ROBOTSTXT_OBEY = False
 
     def start_requests(self):
-        # Start by authenticating.
-        # Start by accessing homepage for list of cities.
+        # Start with tracklist
         url = 'https://api.musixmatch.com/ws/1.1/track.search?' \
             + 'format=jsonp&callback=callback&f_lyrics_language=zh&' \
             + 'quorum_factor=1&page_size=100&page=1&' \
@@ -24,9 +24,10 @@ class musixmatchSpider(scrapy.Spider):
     def parse_track_list(self, response):
         res = json.loads(response.css('::text').extract_first())
         # Check result returned correctly.
-        result = res.get('body').get('trackList')
+        result = res.get('body').get('track_list')
+        print("RESULT", result)
         if result is not None:
-            # Check if last page.
+            # Check if last page.)
             for track in result:
                 url = 'https://api.musixmatch.com/ws/1.1/track.lyrics.get?' \
                  + 'format=jsonp&callback=callback&track_id={track_id}&' \
@@ -35,7 +36,7 @@ class musixmatchSpider(scrapy.Spider):
                 request = scrapy.Request(url, self.parse_track,
                                      headers={'User-Agent': 'Mozilla/5.0'}
                                      )
-                request.meta['track_name'] = result.get('track_name')
+                request.meta['track_name'] = track.get('track_name')
                 yield request
 
     def parse_track(self, response):

@@ -7,7 +7,7 @@ class lyricstranslateSpider(scrapy.Spider):
     def start_requests(self):
         # Start by authenticating.
         # Start by accessing homepage for list of cities.
-        url = 'https://lyricstranslate.com/en/songs/15/none/none?page=1'
+        url = 'https://lyricstranslate.com/en/songs/15/none/none?page=1&order=Popularity'
         request = scrapy.Request(
             url, self.parse_track_list,
             headers={'User-Agent': 'Mozilla/5.0'}
@@ -21,7 +21,7 @@ class lyricstranslateSpider(scrapy.Spider):
     @staticmethod
     def page_from_url(url):
         try:
-            return int(url.split('=')[1])
+            return int(url.split("&")[0].split("=")[1])
         except:
             return None
 
@@ -29,16 +29,12 @@ class lyricstranslateSpider(scrapy.Spider):
         parsed_uri = urlparse(response.url)
         domain = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)[:-1]
         links = response.xpath('//@href').extract()
-        song_links = [l for l in links if l[-11:] == 'lyrics.html']
-        next_page = self.page_from_url(response.url) + 1
+        song_links = response.xpath('//div[@class="stt"]/a/@href').extract()
+        next_page_num = self.page_from_url(response.url) + 1
+        # this will go to infinity, should stop when no pages
+        next_page_url = f"https://lyricstranslate.com/en/songs/15/none/none?page={next_page_num}&order=Popularity"
         follow_links = list(set([l for l in links if l[:9] == '/en/songs'
-                        and self.page_from_url(l) == next_page]))
-        for l in follow_links:
-            request = scrapy.Request(
-                domain + l, self.parse_track_list,
-                headers={'User-Agent': 'Mozilla/5.0'}
-            )
-            yield request
+                        and self.page_from_url(l) == next_page_num]))
 
         for l in song_links:
             request = scrapy.Request(
@@ -47,22 +43,28 @@ class lyricstranslateSpider(scrapy.Spider):
             )
             yield request
 
+        request = scrapy.Request(
+            next_page_url, self.parse_track_list,
+            headers={'User-Agent': 'Mozilla/5.0'}
+        )
+        yield request
+
     def parse_song(self, response):
         try:
-            lyrics = ''.join(response.xpath(
-                '//div[@class="song-node-text"]/div/div/div/text()'
-            ).extract())
-            title = response.xpath(
-                '//div[@class="song-node-text"]/h2/text()'
-            ).extract_first()
+            lyrics = response.xpath('string(//div[@id="song-body"])').extract_first()
+            title = response.xpath('string(//div[@id="song-title"])').extract_first().replace("lyrics","").strip()
             artist = response.xpath(
-                '//li[@class="song-node-info-artist"]/a/text()'
+                'string(//div[@class="artist-title"])'
             ).extract_first()
+            video_link = response.xpath("//*[@videoid]/a/@href").extract_first()
             # Check result returned correctly.
-            track = {'lyrics': lyrics,
-                      'title': title,
-                      'artist': artist,
-                      'url': response.url}
+            track = {
+                'lyrics': lyrics,
+                'title': title,
+                'artist': artist,
+                'url': response.url,
+                'video_link': video_link
+                }
             yield track
         except:
             print('error')

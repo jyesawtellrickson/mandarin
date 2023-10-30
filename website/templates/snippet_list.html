@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block title %}{{ snippet_type }} List{% endblock %} {% block content
+    %}
+    <h1 align="center">{{ snippet_type }}s</h1>
+    <text>Total {{ snippet_type }}s: {{ snippets_length }}</text>
+    <ul class="list-group list-group-flush" id="songs">
+      {% for song in songs | sort(attribute='score') %}
+      <li class="list-group-item">
+        <a href="/song/name/{{ song.name }}"">{{ song.name }}</a> - {{ song.artist }} - {{ song.score }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endblock %}

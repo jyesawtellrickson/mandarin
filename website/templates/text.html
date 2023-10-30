@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}{{ snippet.name }} - {{ snippet.artist }}{% endblock %} {% block content
+    %}
+    <button type="button" class="close" onClick="colourGrades()">
+        <span aria-hidden="true">Colour!</span>
+    </button>
+    <div class="row; text-center"> <h1 align="center">{{ snippet.name }} - {{ snippet.artist }}</h1></div>
+    <div class="row; text-center"><span style="white-space: pre;">{{ s2h(ap(h2s(translation.text)), l="together") | safe }}</span></div>
+    <div class="row">
+        <div class="col"><h2>Hanyu</h2><span style="white-space: pre;">{{ s2h(h2s(translation.text), l="hanyu") | safe }}</span></div>
+        <div class="col"><h2>Pinyin</h2><span style="white-space: pre;">{{ s2h(ap(h2s(translation.text)), l="pinyin") | safe }}</span></div>
+        <div class="col"><h2>Vocab List</h2><span style="white-space: pre;">{{ gv(translation.text) | safe }}</span></div>
+    </div>
+
+    <iframe width="420" height="315" src="{{ u2e(snippet.url) }}" referrerpolicy="no-referrer-when-downgrade" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+        </iframe>
+    <!--<div class="row; text-center"><span style="white-space: pre;">{{ h2p(translation.text, together=True) }}</span></div>-->
+
+
+        {% endblock %}
