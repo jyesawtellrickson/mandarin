@@ -1,4 +1,7 @@
 # To Do
+Setup github : https://docs.github.com/en/get-started/quickstart/create-a-repo
+
+
 Acquire other learning methods data, e.g. characters from base up
 Acquire chinese subtitle data - can we take screencaps as well to link?? :OOO
 Train word2vec model on chinese/english to create 'similar' term lists

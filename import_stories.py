@@ -1,18 +1,26 @@
-# Import songs into database
+"""Imports songs into database
+
+Usage:
+
+
+Details:
+    Stories are read from the stories_folder,
+    snippets are prepared and added to database,
+    stats are calculated.
+
+
+"""
 import pickle as pkl
 from website import db
 from main import app
 from website.models import Snippet, Translation, Stat
 from ast import literal_eval
 import website.snippet as old_snippet
-
-# app.app_context().push()
-
-
-
 from os import listdir
 from os.path import isfile, join
 
+
+# app.app_context().push()
 print("Importing stories")
 stories_folder = 'data/stories/'
 
