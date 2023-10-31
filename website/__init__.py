@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from .static import utils
+import os
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -10,7 +11,7 @@ DB_NAME = "database.db"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
+    app.config['SECRET_KEY'] = os.environ.get('WEBSITE_SECRET_KEY', None)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SECURE_REFERRER_POLICY'] = "no-referrer-when-downgrade"
 
