@@ -114,7 +114,7 @@ rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.10.2
 Scrapy==2.10.1
-Send2Trash==1.7.0a1
+Send2Trash
 service-identity==23.1.0
 six==1.16.0
 sniffio==1.3.0
