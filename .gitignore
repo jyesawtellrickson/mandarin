@@ -13,6 +13,7 @@
 data/*
 *.csv
 *.json
+*.db
 
 # VENV
 venv/*
