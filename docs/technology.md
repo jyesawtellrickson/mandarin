@@ -8,6 +8,8 @@ The database is SQL Alchemy.
 
 Docs managed with Sphinx.
 
+Bootstrap for css.
+
 ## Development
 
 Use venv
@@ -20,7 +22,7 @@ Develop analytics with:
 ```jupyter lab```
 
 Website located at
-```http://127.0.0.1:5000/song_list```
+http://127.0.0.1:5000/song_list
 
 ### Working with DB
 
