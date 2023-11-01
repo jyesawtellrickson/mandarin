@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, request, flash, url_for, jsonify
 from flask_login import login_required, current_user
-from .models import Note, Snippet, Translation, Stat
+from .models import Note, Snippet, Translation, Stat, Favourite
 from . import db
 import json
 from sqlalchemy.sql import func
@@ -11,17 +11,7 @@ views = Blueprint("views", __name__)
 @views.route("/", methods=["GET", "POST"])
 @login_required
 def home():
-    if request.method == "POST":
-        note = request.form.get("note")
-
-        if len(note) < 1:
-            flash("Note is too short", category="error")
-        else:
-            new_note = Note(data=note, user_id=current_user.id)
-            db.session.add(new_note)
-            db.session.commit()
-            flash("Note added", category="success")
-
+    Translation.query.filter_by(translation_id=snippet_id).first()
     return render_template("home.html", user=current_user)
 
 @views.route("/delete-note", methods=["POST"])
@@ -45,14 +35,25 @@ def song_id(snippet_id):
     translation = Translation.query.filter_by(snippet_id=snippet_id).first()
     return render_template("text.html", user=current_user, snippet=snippet, translation=translation)
 
-@views.route("/song/name/<string:snippet_name>", methods=["GET"])
+@views.route("/song/name/<string:snippet_name>", methods=["GET", "POST"])
 def song_name(snippet_name):
+    if request.method == "POST":
+        snippet_id = request.form.get("snippet_id")
+        translation_id = request.form.get("translation_id")
+        new_favourite = Favourite(user_id=current_user.id, snippet_id=snippet_id, translation_id=translation_id)
+
+        db.session.add(new_favourite)
+        db.session.commit()
+        flash("Added to favourites!", category="success")
+
     snippet = Snippet.query.filter_by(name=snippet_name).first()
     translation=None
     if snippet:
         translation = Translation.query.filter_by(snippet_id=snippet.id).first()
 
     return render_template("text.html", user=current_user, snippet=snippet, translation=translation)
+
+
 
 @views.route("/song/random", methods=["GET"])
 def random_song():

@@ -1,9 +1,23 @@
 {% extends "base.html" %} {% block title %}{{ snippet.name }} - {{ snippet.artist }}{% endblock %} {% block content
     %}
+
+    <div class="row; text-center"> <h1 align="center">{{ snippet.name }} - {{ snippet.artist }}</h1></div>
+    <div class="row">
+    <div class="col">
+    <form method="POST">
+        <div align="center">
+            <button type="submit" class="btn btn-primary">Favourite Song</button>
+        </div>
+        <input type="hidden" id="snippet_id" name="snippet_id" value="{{ snippet.id }}" />
+        <input type="hidden" id="translation_id" name="translation_id" value="{{ translation.id }}" />
+    </form>
+</div>
+<div class="col">
     <button type="button" class="close" onClick="colourGrades()">
         <span aria-hidden="true">Colour!</span>
     </button>
-    <div class="row; text-center"> <h1 align="center">{{ snippet.name }} - {{ snippet.artist }}</h1></div>
+</div>
+    </div>
     <div class="row; text-center"><span style="white-space: pre;">{{ s2h(ap(h2s(translation.text)), l="together") | safe }}</span></div>
     <div class="row">
         <div class="col"><h2>Hanyu</h2><span style="white-space: pre;">{{ s2h(h2s(translation.text), l="hanyu") | safe }}</span></div>
